@@ -33,5 +33,3 @@ def func_testes_executores(**context):
     print(f"Total Memory: {resources['total_memory'] / (1024 ** 3):.2f} GB")
     print(f"Available Memory: {resources['available_memory'] / (1024 ** 3):.2f} GB")
 
-    ti = context["ti"]  # TaskInstance
-    print(f"Executor: {ti.executor}")
