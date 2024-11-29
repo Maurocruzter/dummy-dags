@@ -17,9 +17,6 @@ data_interval_end = "{{ macros.dateutil.parser.isoparse(parse_ts_dag_run(dag_run
 timestamp_dagrun = "{{ parse_ts_dag_run(dag_run_id=run_id, data_interval_end=data_interval_end, external_trigger=dag_run.external_trigger) }}"
 
 
-gx_root_dir = "/opt/airflow/dags/repo/gx"
-
-
 
 default_args = {
     "start_date": datetime(2023, 10, 25),
