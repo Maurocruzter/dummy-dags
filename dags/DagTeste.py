@@ -66,13 +66,13 @@ def dag_headcount():
 
         func_testes_executores(**context)
 
-    # pipeline_flow = (
-    #     task_default_executor() >> task_local_executor() >> task_celery_executor()
-    # )
-
     pipeline_flow = (
-        task_default_executor()
+        task_default_executor() >> task_local_executor() >> task_celery_executor()
     )
+
+    # pipeline_flow = (
+    #     task_default_executor()
+    # )
 
 
 dag_headcount()
