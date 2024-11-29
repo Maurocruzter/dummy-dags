@@ -50,7 +50,7 @@ def dag_headcount():
 
         func_testes_executores(**context)
 
-    @task(executor="LocalExecutor")
+    #@task(executor="LocalExecutor")
     def task_local_executor(**context):
         from utils.fn_testes_executores import (
             func_testes_executores,
