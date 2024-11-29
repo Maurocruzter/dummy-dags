@@ -3,8 +3,10 @@ from datetime import datetime
 from utils.functions import parse_ts_dag_run
 from airflow.providers.cncf.kubernetes.operators.spark_kubernetes import SparkKubernetesOperator
 from airflow.providers.cncf.kubernetes.sensors.spark_kubernetes import SparkKubernetesSensor
+from airflow.operators.python import PythonOperator
+from airflow.executors.local_executor import LocalExecutor
 
-description = "Pipeline de teste multiplos executores"
+description = "Pipeline para coleta e atualização da base de headcount (anteriormente socios)"
 
 default_args = {
     "start_date": datetime(2023, 10, 25),
@@ -29,13 +31,19 @@ default_args = {
     }
 )
 def dag_headcount():
-    @task
-    def task_default_executor(**context):
+    # Using PythonOperator with LocalExecutor
+    def default_executor_func(**context):
         from utils.fn_testes_executores import func_testes_executores
         func_testes_executores(**context)
-        return None
 
-    @task(executor="LocalExecutor")  # Explicitly set LocalExecutor
+    task_default_executor = PythonOperator(
+        task_id='task_default_executor',
+        python_callable=default_executor_func,
+        provide_context=True,
+        executor=LocalExecutor()
+    )
+
+    @task
     def task_local_executor(**context):
         from utils.fn_testes_executores import func_testes_executores
         func_testes_executores(**context)
@@ -48,7 +56,7 @@ def dag_headcount():
         return None
 
     # Explicitly chain the tasks
-    first_task = task_default_executor()
+    first_task = task_default_executor
     second_task = task_local_executor()
     third_task = task_celery_executor()
 
