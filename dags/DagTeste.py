@@ -4,7 +4,7 @@ from utils.functions import parse_ts_dag_run
 from airflow.providers.cncf.kubernetes.operators.spark_kubernetes import SparkKubernetesOperator
 from airflow.providers.cncf.kubernetes.sensors.spark_kubernetes import SparkKubernetesSensor
 
-description = "Pipeline para coleta e atualização da base de headcount (anteriormente socios)"
+description = "Pipeline de teste multiplos executores"
 
 default_args = {
     "start_date": datetime(2023, 10, 25),
@@ -35,7 +35,7 @@ def dag_headcount():
         func_testes_executores(**context)
         return None
 
-    @task
+    @task(executor="LocalExecutor")  # Explicitly set LocalExecutor
     def task_local_executor(**context):
         from utils.fn_testes_executores import func_testes_executores
         func_testes_executores(**context)
@@ -47,10 +47,12 @@ def dag_headcount():
         func_testes_executores(**context)
         return None
 
+    # Explicitly chain the tasks
     first_task = task_default_executor()
     second_task = task_local_executor()
     third_task = task_celery_executor()
 
     first_task >> second_task >> third_task
 
+# Important: Call the DAG function to instantiate it
 dag_instance = dag_headcount()
