@@ -1,6 +1,5 @@
 from airflow.decorators import dag, task
 from datetime import datetime
-from utils.msteams import msteams_task_failed
 from utils.functions import parse_ts_dag_run
 from airflow.providers.cncf.kubernetes.operators.spark_kubernetes import (
     SparkKubernetesOperator,
