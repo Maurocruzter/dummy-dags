@@ -50,24 +50,28 @@ def dag_headcount():
 
         func_testes_executores(**context)
 
-    #@task(executor="LocalExecutor")
-    def task_local_executor(**context):
-        from utils.fn_testes_executores import (
-            func_testes_executores,
-        )
+    # #@task(executor="LocalExecutor")
+    # def task_local_executor(**context):
+    #     from utils.fn_testes_executores import (
+    #         func_testes_executores,
+    #     )
 
-        func_testes_executores(**context)
+    #     func_testes_executores(**context)
 
-    @task(executor="CeleryExecutor")
-    def task_celery_executor(**context):
-        from utils.fn_testes_executores import (
-            func_testes_executores,
-        )
+    # #@task(executor="CeleryExecutor")
+    # def task_celery_executor(**context):
+    #     from utils.fn_testes_executores import (
+    #         func_testes_executores,
+    #     )
 
-        func_testes_executores(**context)
+    #     func_testes_executores(**context)
+
+    # pipeline_flow = (
+    #     task_default_executor() >> task_local_executor() >> task_celery_executor()
+    # )
 
     pipeline_flow = (
-        task_default_executor() >> task_local_executor() >> task_celery_executor()
+        task_default_executor()
     )
 
 
