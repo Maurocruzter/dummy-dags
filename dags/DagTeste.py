@@ -23,7 +23,6 @@ default_args = {
     "email_on_retry": False,
     "retries": 0,
     "namespace": "processing",
-    "executor": "LocalExecutor",
 }
 
 
