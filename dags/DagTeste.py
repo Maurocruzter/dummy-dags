@@ -1,21 +1,10 @@
 from airflow.decorators import dag, task
 from datetime import datetime
 from utils.functions import parse_ts_dag_run
-from airflow.providers.cncf.kubernetes.operators.spark_kubernetes import (
-    SparkKubernetesOperator,
-)
-from airflow.providers.cncf.kubernetes.sensors.spark_kubernetes import (
-    SparkKubernetesSensor,
-)
+from airflow.providers.cncf.kubernetes.operators.spark_kubernetes import SparkKubernetesOperator
+from airflow.providers.cncf.kubernetes.sensors.spark_kubernetes import SparkKubernetesSensor
 
-
-description = (
-    "Pipeline para coleta e atualização da base de headcount (anteriormente socios)"
-)
-data_interval_end = "{{ macros.dateutil.parser.isoparse(parse_ts_dag_run(dag_run_id=run_id, data_interval_end=data_interval_end, external_trigger=dag_run.external_trigger)) }}"
-timestamp_dagrun = "{{ parse_ts_dag_run(dag_run_id=run_id, data_interval_end=data_interval_end, external_trigger=dag_run.external_trigger) }}"
-
-
+description = "Pipeline para coleta e atualização da base de headcount (anteriormente socios)"
 
 default_args = {
     "start_date": datetime(2023, 10, 25),
@@ -24,7 +13,6 @@ default_args = {
     "retries": 0,
     "namespace": "processing",
 }
-
 
 @dag(
     dag_id="Dag_multiplos_executores",
@@ -38,41 +26,31 @@ default_args = {
     tags=["teste"],
     user_defined_macros={
         "parse_ts_dag_run": parse_ts_dag_run,
-    },
+    }
 )
 def dag_headcount():
-
     @task
     def task_default_executor(**context):
-        from utils.fn_testes_executores import (
-            func_testes_executores,
-        )
-
+        from utils.fn_testes_executores import func_testes_executores
         func_testes_executores(**context)
+        return None
 
-    #@task(executor="LocalExecutor")
+    @task
     def task_local_executor(**context):
-        from utils.fn_testes_executores import (
-            func_testes_executores,
-        )
-
+        from utils.fn_testes_executores import func_testes_executores
         func_testes_executores(**context)
+        return None
 
-    #@task(executor="CeleryExecutor")
+    @task
     def task_celery_executor(**context):
-        from utils.fn_testes_executores import (
-            func_testes_executores,
-        )
-
+        from utils.fn_testes_executores import func_testes_executores
         func_testes_executores(**context)
+        return None
 
-    pipeline_flow = (
-        task_default_executor() >> task_local_executor() >> task_celery_executor()
-    )
+    first_task = task_default_executor()
+    second_task = task_local_executor()
+    third_task = task_celery_executor()
 
-    # pipeline_flow = (
-    #     task_default_executor()
-    # )
+    first_task >> second_task >> third_task
 
-
-dag_headcount()
+dag_instance = dag_headcount()
