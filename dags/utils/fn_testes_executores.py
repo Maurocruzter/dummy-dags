@@ -1,14 +1,4 @@
-import json
-import psycopg2
-import pandas as pd
-from utils.secrets_manager import get_secret_value
-from utils.bucket_names import get_bucket_name
-import boto3
-import hubspot
-from dateutil.parser import isoparse
-import pickle
 from airflow.configuration import conf
-
 from airflow.models import TaskInstance
 from airflow.utils.state import State
 import psutil
